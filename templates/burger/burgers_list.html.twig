@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des burgers - CRUDcroustillant{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Liste des burgers</h1>
+        <ul>
+            {% for burger in burgers %}
+                <li>
+                    <a href="{{ path('app_burger_show', {id: burger.id}) }}">{{ burger.name }}</a>
+                </li>
+            {% else %}
+                <li>Aucun burger trouvé.</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
