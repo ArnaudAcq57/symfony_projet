@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des pains{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Liste des pains</h1>
+        <ul>
+            {% for pain in pains %}
+                <li>{{ pain.name }}</li>
+            {% else %}
+                <li>Aucun pain trouvé.</li>
+            {% endfor %}
+        </ul>
+        <p><a href="{{ path('pain_create') }}">Créer un nouveau pain</a></p>
+    </div>
+{% endblock %}

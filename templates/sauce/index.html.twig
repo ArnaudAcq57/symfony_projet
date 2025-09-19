@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des sauces{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Liste des sauces</h1>
+        <ul>
+            {% for sauce in sauces %}
+                <li>{{ sauce.name }}</li>
+            {% else %}
+                <li>Aucune sauce trouvée.</li>
+            {% endfor %}
+        </ul>
+        <p><a href="{{ path('sauce_create') }}">Créer une nouvelle sauce</a></p>
+    </div>
+{% endblock %}

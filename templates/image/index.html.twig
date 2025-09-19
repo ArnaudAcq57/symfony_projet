@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des images{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Liste des images</h1>
+        <ul>
+            {% for image in images %}
+                <li>{{ image.name }}</li>
+            {% else %}
+                <li>Aucune image trouvée.</li>
+            {% endfor %}
+        </ul>
+        <p><a href="{{ path('image_create') }}">Créer une nouvelle image</a></p>
+    </div>
+{% endblock %}

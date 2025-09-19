@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des oignons{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Liste des oignons</h1>
+        <ul>
+            {% for oignon in oignons %}
+                <li>{{ oignon.name }}</li>
+            {% else %}
+                <li>Aucun oignon trouvé.</li>
+            {% endfor %}
+        </ul>
+        <p><a href="{{ path('oignon_create') }}">Créer un nouvel oignon</a></p>
+    </div>
+{% endblock %}
