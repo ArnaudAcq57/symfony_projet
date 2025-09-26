@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un burger{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Créer votre burger personnalisé</h1>
+
+        <form method="post">
+            <div style="margin-bottom: 1rem;">
+                <label for="name">Nom du burger :</label><br>
+                <input type="text" id="name" name="name" required style="width: 100%; padding: 0.5rem;">
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label for="price">Prix (€) :</label><br>
+                <input type="number" id="price" name="price" step="0.01" min="0" required style="width: 100%; padding: 0.5rem;">
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label for="pain_id">Choisir le pain :</label><br>
+                <select id="pain_id" name="pain_id" required style="width: 100%; padding: 0.5rem;">
+                    <option value="">-- Sélectionner un pain --</option>
+                    {% for pain in pains %}
+                        <option value="{{ pain.id }}">{{ pain.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label>Oignons (optionnel) :</label><br>
+                {% for oignon in oignons %}
+                    <input type="checkbox" id="oignon_{{ oignon.id }}" name="oignons[]" value="{{ oignon.id }}">
+                    <label for="oignon_{{ oignon.id }}">{{ oignon.name }}</label><br>
+                {% endfor %}
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label>Sauces (optionnel) :</label><br>
+                {% for sauce in sauces %}
+                    <input type="checkbox" id="sauce_{{ sauce.id }}" name="sauces[]" value="{{ sauce.id }}">
+                    <label for="sauce_{{ sauce.id }}">{{ sauce.name }}</label><br>
+                {% endfor %}
+            </div>
+
+            <button type="submit" style="padding: 0.75rem 1.5rem; background-color: #333; color: white; border: none; cursor: pointer;">
+                Créer le burger
+            </button>
+        </form>
+
+        <p><a href="{{ path('app_burger_list') }}">← Retour à la liste des burgers</a></p>
+    </div>
+{% endblock %}

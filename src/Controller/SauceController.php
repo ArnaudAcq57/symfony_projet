@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Sauce;
+use App\Repository\SauceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,10 +11,10 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class SauceController extends AbstractController
 {
-    #[Route('/sauce', name: 'app_sauce')]
-    public function index(EntityManagerInterface $entityManager): Response
+    #[Route('/sauce', name: 'sauce_index')]
+    public function index(SauceRepository $sauceRepository): Response
     {
-        $sauces = $entityManager->getRepository(Sauce::class)->findAll();
+        $sauces = $sauceRepository->findAll();
 
         return $this->render('sauce/index.html.twig', [
             'sauces' => $sauces,
@@ -24,7 +25,7 @@ class SauceController extends AbstractController
     public function create(EntityManagerInterface $entityManager): Response
     {
         $sauce = new Sauce();
-        $sauce->setName('Sauce barbecue');
+        $sauce->setName('Sauce piquante');
 
         $entityManager->persist($sauce);
         $entityManager->flush();

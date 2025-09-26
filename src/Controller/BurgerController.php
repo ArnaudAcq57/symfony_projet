@@ -2,45 +2,108 @@
 
 namespace App\Controller;
 
+use App\Entity\Burger;
+use App\Entity\Oignon;
+use App\Entity\Pain;
+use App\Entity\Sauce;
+use App\Repository\BurgerRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class BurgerController extends AbstractController
 {
-    // Simule une base de données de burgers
-    private const BURGERS = [
-        ['id' => 1, 'name' => 'Le Classique', 'description' => 'Pain, steak, salade, tomate, oignons.'],
-        ['id' => 2, 'name' => 'Le Baconator', 'description' => 'Pain, double steak, double bacon, fromage.'],
-        ['id' => 3, 'name' => 'Le Végé Deluxe', 'description' => 'Pain, galette de légumes, salade, avocat.'],
-        ['id' => 4, 'name' => 'Le Makogon', 'description' => 'Pain brioché, steak de 180g, cheddar maturé, sauce secrète.'],
-    ];
-
     #[Route('/burgers', name: 'app_burger_list')]
-    public function list(): Response
+    public function index(BurgerRepository $burgerRepository): Response
     {
+        $burgers = $burgerRepository->findAll();
+
         return $this->render('burger/burgers_list.html.twig', [
-            'burgers' => self::BURGERS,
+            'burgers' => $burgers,
         ]);
     }
 
     #[Route('/burger/{id}', name: 'app_burger_show', requirements: ['id' => '\d+'])]
-    public function show(int $id): Response
+    public function show(Burger $burger): Response
     {
-        $burger = null;
-        foreach (self::BURGERS as $b) {
-            if ($b['id'] === $id) {
-                $burger = $b;
-                break;
-            }
-        }
-
-        if (!$burger) {
-            throw $this->createNotFoundException('Le burger demandé n\'existe pas.');
-        }
-
         return $this->render('burger/burger_show.html.twig', [
             'burger' => $burger,
+        ]);
+    }
+
+    #[Route('/burger/create', name: 'burger_create')]
+    public function create(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        // Si c'est une soumission de formulaire
+        if ($request->isMethod('POST')) {
+            $name = $request->request->get('name');
+            $price = (float) $request->request->get('price');
+            $painId = $request->request->get('pain_id');
+            
+            // Validation et cast explicite pour les arrays
+            $oignonIds = $request->request->all('oignons');
+            $sauceIds = $request->request->all('sauces');
+            
+            // S'assurer que ce sont des arrays
+            if (!is_array($oignonIds)) {
+                $oignonIds = [];
+            }
+            if (!is_array($sauceIds)) {
+                $sauceIds = [];
+            }
+
+            // Récupérer le pain sélectionné
+            $pain = $entityManager->getRepository(Pain::class)->find($painId);
+            
+            if (!$pain) {
+                return new Response('Erreur : Pain non trouvé.');
+            }
+
+            // Créer le burger
+            $burger = new Burger();
+            $burger->setName($name);
+            $burger->setPrice($price);
+            $burger->setPain($pain);
+
+            // Ajouter les oignons sélectionnés
+            foreach ($oignonIds as $oignonId) {
+                // Validation supplémentaire pour s'assurer que c'est un ID valide
+                if (is_numeric($oignonId)) {
+                    $oignon = $entityManager->getRepository(Oignon::class)->find((int)$oignonId);
+                    if ($oignon) {
+                        $burger->addOignon($oignon);
+                    }
+                }
+            }
+
+            // Ajouter les sauces sélectionnées
+            foreach ($sauceIds as $sauceId) {
+                // Validation supplémentaire pour s'assurer que c'est un ID valide
+                if (is_numeric($sauceId)) {
+                    $sauce = $entityManager->getRepository(Sauce::class)->find((int)$sauceId);
+                    if ($sauce) {
+                        $burger->addSauce($sauce);
+                    }
+                }
+            }
+
+            $entityManager->persist($burger);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_burger_list');
+        }
+
+        // Afficher le formulaire de création
+        $pains = $entityManager->getRepository(Pain::class)->findAll();
+        $oignons = $entityManager->getRepository(Oignon::class)->findAll();
+        $sauces = $entityManager->getRepository(Sauce::class)->findAll();
+
+        return $this->render('burger/burger_create.html.twig', [
+            'pains' => $pains,
+            'oignons' => $oignons,
+            'sauces' => $sauces,
         ]);
     }
 }

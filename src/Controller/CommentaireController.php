@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Commentaire;
+use App\Repository\CommentaireRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,10 +11,10 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class CommentaireController extends AbstractController
 {
-    #[Route('/commentaire', name: 'app_commentaire')]
-    public function index(EntityManagerInterface $entityManager): Response
+    #[Route('/commentaire', name: 'commentaire_index')]
+    public function index(CommentaireRepository $commentaireRepository): Response
     {
-        $commentaires = $entityManager->getRepository(Commentaire::class)->findAll();
+        $commentaires = $commentaireRepository->findAll();
 
         return $this->render('commentaire/index.html.twig', [
             'commentaires' => $commentaires,
@@ -24,7 +25,7 @@ class CommentaireController extends AbstractController
     public function create(EntityManagerInterface $entityManager): Response
     {
         $commentaire = new Commentaire();
-        $commentaire->setName('Excellent burger, je recommande !');
+        $commentaire->setName('Délicieux, je recommande !');
 
         $entityManager->persist($commentaire);
         $entityManager->flush();
