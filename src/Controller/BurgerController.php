@@ -39,32 +39,21 @@ class BurgerController extends AbstractController
         // Si c'est une soumission de formulaire
         if ($request->isMethod('POST')) {
             $name = $request->request->get('name');
-            $price = (float) $request->request->get('price');
-            $painId = $request->request->get('pain_id');
+            $price = $request->request->get('price'); // Garder comme string au lieu de convertir en float
+            $painId = (int) $request->request->get('pain_id');
+            $oignonIds = $request->request->all('oignons') ?: []; // Récupérer les oignons sélectionnés
+            $sauceIds = $request->request->all('sauces') ?: []; // Récupérer les sauces sélectionnées
             
-            // Validation et cast explicite pour les arrays
-            $oignonIds = $request->request->all('oignons');
-            $sauceIds = $request->request->all('sauces');
-            
-            // S'assurer que ce sont des arrays
-            if (!is_array($oignonIds)) {
-                $oignonIds = [];
-            }
-            if (!is_array($sauceIds)) {
-                $sauceIds = [];
-            }
-
-            // Récupérer le pain sélectionné
+            // Récupérer le pain
             $pain = $entityManager->getRepository(Pain::class)->find($painId);
-            
             if (!$pain) {
-                return new Response('Erreur : Pain non trouvé.');
+                throw $this->createNotFoundException('Pain non trouvé');
             }
-
+            
             // Créer le burger
             $burger = new Burger();
             $burger->setName($name);
-            $burger->setPrice($price);
+            $burger->setPrice($price); // Passer directement la string
             $burger->setPain($pain);
 
             // Ajouter les oignons sélectionnés

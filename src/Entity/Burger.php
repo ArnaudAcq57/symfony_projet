@@ -19,8 +19,11 @@ class Burger
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
-    private ?float $price = null;
+    private ?string $price = null; // Changer de float à string
 
     #[ORM\ManyToOne(inversedBy: 'burgers')]
     #[ORM\JoinColumn(nullable: false)]
@@ -35,7 +38,7 @@ class Burger
     #[ORM\ManyToMany(targetEntity: Oignon::class, inversedBy: 'burgers')]
     private Collection $oignons;
 
-    #[ORM\ManyToMany(targetEntity: Sauce::class, inversedBy: 'sauces')]
+    #[ORM\ManyToMany(targetEntity: Sauce::class, inversedBy: 'burgers')]
     private Collection $sauces;
 
     public function __construct()
@@ -62,12 +65,24 @@ class Burger
         return $this;
     }
 
-    public function getPrice(): ?float
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getPrice(): ?string
     {
         return $this->price;
     }
 
-    public function setPrice(float $price): static
+    public function setPrice(string $price): static // Changer le paramètre en string
     {
         $this->price = $price;
 
