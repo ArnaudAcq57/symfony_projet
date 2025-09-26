@@ -39,6 +39,7 @@ class BurgerController extends AbstractController
         // Si c'est une soumission de formulaire
         if ($request->isMethod('POST')) {
             $name = $request->request->get('name');
+            $description = $request->request->get('description'); // Récupérer la description
             $price = $request->request->get('price'); // Garder comme string au lieu de convertir en float
             $painId = (int) $request->request->get('pain_id');
             $oignonIds = $request->request->all('oignons') ?: []; // Récupérer les oignons sélectionnés
@@ -53,6 +54,7 @@ class BurgerController extends AbstractController
             // Créer le burger
             $burger = new Burger();
             $burger->setName($name);
+            $burger->setDescription($description); // Définir la description
             $burger->setPrice($price); // Passer directement la string
             $burger->setPain($pain);
 
