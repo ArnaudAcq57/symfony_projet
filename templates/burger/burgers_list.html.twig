@@ -4,16 +4,21 @@
 
 {% block body %}
     <div class="container">
-        <h1>Liste des burgers</h1>
-        <ul>
+        <h1>🍔 Liste des burgers</h1>
+        <ul class="burger-list">
             {% for burger in burgers %}
                 <li>
-                    <a href="{{ path('app_burger_show', {id: burger.id}) }}">{{ burger.name }}</a> - {{ burger.price }}€
+                    <a href="{{ path('app_burger_show', {id: burger.id}) }}">{{ burger.name }}</a>
+                    <span class="price">{{ burger.price }}€</span>
                 </li>
             {% else %}
                 <li>Aucun burger trouvé.</li>
             {% endfor %}
         </ul>
-        <p><a href="{{ path('burger_create') }}">Créer un nouveau burger</a></p>
+        
+        <div class="nav-links">
+            <a href="{{ path('burger_create') }}" class="btn btn-success">+ Créer un nouveau burger</a>
+            <a href="{{ path('app_burger_search') }}" class="btn btn-primary">🔍 Recherche avancée</a>
+        </div>
     </div>
 {% endblock %}
