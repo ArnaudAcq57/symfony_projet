@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvel oignon{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="top-navigation">
+            <a href="{{ path('oignon_index') }}" class="btn btn-back-top">← Retour</a>
+        </div>
+        
+        <h1>🧅 Créer un nouvel oignon</h1>
+
+        {{ form_start(oignonForm, {'attr': {'class': 'simple-form'}}) }}
+            <div class="form-group">
+                {{ form_label(oignonForm.name) }}
+                {{ form_widget(oignonForm.name) }}
+                {{ form_errors(oignonForm.name) }}
+            </div>
+
+            <div class="form-actions">
+                {{ form_widget(oignonForm.submit) }}
+            </div>
+        {{ form_end(oignonForm) }}
+    </div>
+
+    <style>
+        .top-navigation {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            z-index: 10;
+        }
+        
+        .btn-back-top {
+            background: var(--text-muted);
+            color: white;
+            padding: 0.6rem 1rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .btn-back-top:hover {
+            background: #6c7b7d;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-actions {
+            margin: 2rem 0 1rem 0;
+            text-align: center;
+        }
+        
+        .container {
+            padding: 3rem 1.5rem 1.5rem 1.5rem;
+            margin: 1.5rem auto;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.8rem;
+        }
+        
+        @media (max-width: 768px) {
+            .top-navigation {
+                position: static;
+                margin-bottom: 1rem;
+            }
+            
+            .container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+{% endblock %}

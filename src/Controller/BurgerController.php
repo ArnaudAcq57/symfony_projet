@@ -3,9 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Burger;
-use App\Entity\Oignon;
-use App\Entity\Pain;
-use App\Entity\Sauce;
+use App\Form\BurgerType;
 use App\Repository\BurgerRepository;
 use App\Repository\SauceRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -37,65 +35,23 @@ class BurgerController extends AbstractController
     #[Route('/burger/create', name: 'burger_create')]
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
-        // Si c'est une soumission de formulaire
-        if ($request->isMethod('POST')) {
-            $name = $request->request->get('name');
-            $description = $request->request->get('description'); // Récupérer la description
-            $price = $request->request->get('price'); // Garder comme string au lieu de convertir en float
-            $painId = (int) $request->request->get('pain_id');
-            $oignonIds = $request->request->all('oignons') ?: []; // Récupérer les oignons sélectionnés
-            $sauceIds = $request->request->all('sauces') ?: []; // Récupérer les sauces sélectionnées
-            
-            // Récupérer le pain
-            $pain = $entityManager->getRepository(Pain::class)->find($painId);
-            if (!$pain) {
-                throw $this->createNotFoundException('Pain non trouvé');
-            }
-            
-            // Créer le burger
-            $burger = new Burger();
-            $burger->setName($name);
-            $burger->setDescription($description); // Définir la description
-            $burger->setPrice($price); // Passer directement la string
-            $burger->setPain($pain);
-
-            // Ajouter les oignons sélectionnés
-            foreach ($oignonIds as $oignonId) {
-                // Validation supplémentaire pour s'assurer que c'est un ID valide
-                if (is_numeric($oignonId)) {
-                    $oignon = $entityManager->getRepository(Oignon::class)->find((int)$oignonId);
-                    if ($oignon) {
-                        $burger->addOignon($oignon);
-                    }
-                }
-            }
-
-            // Ajouter les sauces sélectionnées
-            foreach ($sauceIds as $sauceId) {
-                // Validation supplémentaire pour s'assurer que c'est un ID valide
-                if (is_numeric($sauceId)) {
-                    $sauce = $entityManager->getRepository(Sauce::class)->find((int)$sauceId);
-                    if ($sauce) {
-                        $burger->addSauce($sauce);
-                    }
-                }
-            }
-
+        $burger = new Burger();
+        $form = $this->createForm(BurgerType::class, $burger);
+        
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($burger);
             $entityManager->flush();
-
+            
+            // Message flash pour confirmer la création
+            $this->addFlash('success', 'Le burger "' . $burger->getName() . '" a été créé avec succès !');
+            
             return $this->redirectToRoute('app_burger_list');
         }
 
-        // Afficher le formulaire de création
-        $pains = $entityManager->getRepository(Pain::class)->findAll();
-        $oignons = $entityManager->getRepository(Oignon::class)->findAll();
-        $sauces = $entityManager->getRepository(Sauce::class)->findAll();
-
         return $this->render('burger/burger_create.html.twig', [
-            'pains' => $pains,
-            'oignons' => $oignons,
-            'sauces' => $sauces,
+            'burgerForm' => $form->createView(),
         ]);
     }
 
@@ -105,6 +61,8 @@ class BurgerController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$burger->getId(), $request->request->get('_token'))) {
             $entityManager->remove($burger);
             $entityManager->flush();
+            
+            $this->addFlash('success', 'Le burger a été supprimé avec succès !');
         }
 
         return $this->redirectToRoute('app_burger_list');

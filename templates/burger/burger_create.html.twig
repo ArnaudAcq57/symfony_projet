@@ -4,137 +4,123 @@
 
 {% block body %}
     <div class="container">
+        <div class="top-navigation">
+            <a href="{{ path('app_burger_list') }}" class="btn btn-back-top">← Retour</a>
+        </div>
+        
         <h1>🍔 Créer votre burger</h1>
 
-        <form method="post" class="burger-form">
+        {{ form_start(burgerForm, {'attr': {'class': 'burger-form'}}) }}
             <div class="form-group">
-                <label for="name">🏷️ Nom du burger</label>
-                <input type="text" id="name" name="name" required placeholder="Ex: Le Délicieux">
-            </div>
-
-            <div class="form-group">
-                <label for="description">📝 Description</label>
-                <textarea id="description" name="description" rows="2" placeholder="Décrivez votre burger..."></textarea>
+                {{ form_label(burgerForm.name) }}
+                {{ form_widget(burgerForm.name) }}
+                {{ form_errors(burgerForm.name) }}
             </div>
 
             <div class="form-group">
-                <label for="price">💰 Prix (€)</label>
-                <input type="number" id="price" name="price" step="0.01" min="0" required placeholder="12.50">
+                {{ form_label(burgerForm.description) }}
+                {{ form_widget(burgerForm.description) }}
+                {{ form_errors(burgerForm.description) }}
             </div>
 
             <div class="form-group">
-                <label for="pain_id">🍞 Pain</label>
-                <select id="pain_id" name="pain_id" required>
-                    <option value="">-- Choisir un pain --</option>
-                    {% for pain in pains %}
-                        <option value="{{ pain.id }}">{{ pain.name }}</option>
-                    {% endfor %}
-                </select>
+                {{ form_label(burgerForm.price) }}
+                {{ form_widget(burgerForm.price) }}
+                {{ form_errors(burgerForm.price) }}
             </div>
 
             <div class="form-group">
-                <label>🧅 Oignons (optionnel)</label>
-                <div class="checkbox-grid-compact">
-                    {% for oignon in oignons %}
-                        <label class="checkbox-label-compact">
-                            <input type="checkbox" id="oignon_{{ oignon.id }}" name="oignons[]" value="{{ oignon.id }}">
-                            {{ oignon.name }}
-                        </label>
-                    {% endfor %}
-                </div>
+                {{ form_label(burgerForm.pain) }}
+                {{ form_widget(burgerForm.pain) }}
+                {{ form_errors(burgerForm.pain) }}
             </div>
 
             <div class="form-group">
-                <label>🥄 Sauces (optionnel)</label>
-                <div class="checkbox-grid-compact">
-                    {% for sauce in sauces %}
-                        <label class="checkbox-label-compact">
-                            <input type="checkbox" id="sauce_{{ sauce.id }}" name="sauces[]" value="{{ sauce.id }}">
-                            {{ sauce.name }}
-                        </label>
-                    {% endfor %}
-                </div>
+                {{ form_label(burgerForm.oignons) }}
+                {{ form_widget(burgerForm.oignons) }}
+                {{ form_errors(burgerForm.oignons) }}
             </div>
 
-            <div class="actions-compact">
-                <button type="submit" class="btn btn-success">✨ Créer le burger</button>
+            <div class="form-group">
+                {{ form_label(burgerForm.sauces) }}
+                {{ form_widget(burgerForm.sauces) }}
+                {{ form_errors(burgerForm.sauces) }}
             </div>
-        </form>
 
-        <div class="nav-links">
-            <a href="{{ path('app_burger_list') }}" class="btn btn-back">← Retour</a>
-        </div>
+            <div class="form-actions">
+                {{ form_widget(burgerForm.submit) }}
+            </div>
+        {{ form_end(burgerForm) }}
     </div>
 
     <style>
-        .form-group {
-            margin-bottom: 1.2rem;
+        /* Navigation en haut à gauche */
+        .top-navigation {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            z-index: 10;
         }
         
-        .checkbox-grid-compact {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 0.6rem;
-            margin-top: 0.6rem;
-        }
-        
-        .checkbox-label-compact {
-            display: flex;
-            align-items: center;
-            padding: 0.5rem 0.7rem;
-            background: var(--light-color);
+        .btn-back-top {
+            background: var(--text-muted);
+            color: white;
+            padding: 0.6rem 1rem;
             border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: var(--transition);
-            border: 1px solid var(--border-color);
+            text-decoration: none;
             font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
-        .checkbox-label-compact:hover {
-            background: white;
-            box-shadow: var(--shadow);
-            border-color: var(--secondary-color);
+        .btn-back-top:hover {
+            background: #6c7b7d;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
         
-        .checkbox-label-compact input[type="checkbox"] {
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Checkboxes très simples */
+        input[type="checkbox"] {
             margin-right: 0.5rem;
-            transform: scale(1.1);
-        }
-        
-        .actions-compact {
-            margin: 1.5rem 0;
-            padding: 0.8rem;
-            background: var(--light-color);
-            border-radius: var(--border-radius);
-            text-align: center;
-        }
-        
-        /* Réduire la taille des inputs */
-        input[type="text"],
-        input[type="number"],
-        textarea,
-        select {
-            padding: 0.8rem;
-            margin: 0.3rem 0 0.8rem 0;
-        }
-        
-        /* Réduire la taille des labels */
-        label {
-            font-size: 0.95rem;
             margin-bottom: 0.3rem;
         }
         
-        /* Container plus compact */
-        .container {
-            padding: 1.5rem;
-            margin: 1.5rem auto;
+        .form-actions {
+            margin: 2rem 0 1rem 0;
+            text-align: center;
         }
         
-        /* Titre plus compact */
+        /* Container avec plus d'espace en haut pour le bouton */
+        .container {
+            padding: 3rem 1.5rem 1.5rem 1.5rem;
+            margin: 1.5rem auto;
+            position: relative;
+        }
+        
+        /* Titre */
         h1 {
             font-size: 2.2rem;
             margin-bottom: 1.2rem;
             padding-bottom: 0.8rem;
+        }
+        
+        /* Responsive pour petits écrans */
+        @media (max-width: 768px) {
+            .top-navigation {
+                position: static;
+                margin-bottom: 1rem;
+            }
+            
+            .container {
+                padding: 1.5rem;
+            }
         }
     </style>
 {% endblock %}

@@ -4,14 +4,31 @@
 
 {% block body %}
     <div class="container">
-        <h1>Liste des pains</h1>
-        <ul>
+        <h1>🍞 Liste des pains</h1>
+        
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        
+        <ul class="burger-list">
             {% for pain in pains %}
-                <li>{{ pain.name }}</li>
+                <li>
+                    <span>{{ pain.name }}</span>
+                    <div>
+                        <form method="post" action="{{ path('pain_delete', {'id': pain.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce pain ?');" style="display: inline-block;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ pain.id) }}">
+                            <button type="submit" class="btn btn-danger btn-sm">🗑️</button>
+                        </form>
+                    </div>
+                </li>
             {% else %}
                 <li>Aucun pain trouvé.</li>
             {% endfor %}
         </ul>
-        <p><a href="{{ path('pain_create') }}">Créer un nouveau pain</a></p>
+        
+        <div class="nav-links">
+            <a href="{{ path('pain_new') }}" class="btn btn-success">+ Créer un nouveau pain</a>
+            <a href="{{ path('app_burger_list') }}" class="btn btn-back">← Retour aux burgers</a>
+        </div>
     </div>
 {% endblock %}
