@@ -4,6 +4,10 @@
 
 {% block body %}
 <div class="container">
+    <div class="top-navigation">
+        <a href="{{ path('app_burger_list') }}" class="btn btn-back-top">← Retour</a>
+    </div>
+    
     <h1>🔍 Recherche avancée</h1>
     
     <div class="search-grid">
@@ -92,13 +96,37 @@
             {% endif %}
         </div>
     {% endif %}
-
-    <div class="nav-links">
-        <a href="{{ path('app_burger_list') }}" class="btn btn-back">← Retour</a>
-    </div>
 </div>
 
 <style>
+    /* Navigation en haut à gauche */
+    .top-navigation {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        z-index: 10;
+    }
+    
+    .btn-back-top {
+        background: var(--text-muted);
+        color: white;
+        padding: 0.6rem 1rem;
+        border-radius: var(--border-radius);
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: var(--transition);
+        display: inline-block;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .btn-back-top:hover {
+        background: #6c7b7d;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
     .results-count {
         color: var(--text-muted);
         font-size: 0.9rem;
@@ -112,6 +140,25 @@
         font-size: 0.85rem;
         margin-top: -0.5rem;
         margin-bottom: 1rem;
+    }
+    
+    /* Container avec plus d'espace en haut pour le bouton */
+    .container {
+        padding: 3rem 1.5rem 1.5rem 1.5rem;
+        margin: 1.5rem auto;
+        position: relative;
+    }
+    
+    /* Responsive pour petits écrans */
+    @media (max-width: 768px) {
+        .top-navigation {
+            position: static;
+            margin-bottom: 1rem;
+        }
+        
+        .container {
+            padding: 1.5rem;
+        }
     }
 </style>
 {% endblock %}
